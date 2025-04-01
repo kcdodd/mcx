@@ -3,7 +3,8 @@
 # Build and distribution configuration
 [build-system]
 requires = [
-  "partis-pyproj ~= 0.1.9",
+  # "partis-pyproj[cmake] ~= 0.1.10",
+  "partis-pyproj[cmake] @ git+https://github.com/kcdodd/partis-pyproj.git",
   "cmake < 4.0",
   # building against 2.0 supports use with both NumPy 2.* and 1.*
   "numpy >= 2.0.0"]
