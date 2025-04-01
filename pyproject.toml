@@ -1,0 +1,106 @@
+# -*- coding: UTF-8 -*-
+#===============================================================================
+# Build and distribution configuration
+[build-system]
+requires = [
+  "partis-pyproj ~= 0.1.9",
+  "cmake < 4.0",
+  # building against 2.0 supports use with both NumPy 2.* and 1.*
+  "numpy >= 2.0.0"]
+
+build-backend = "partis.pyproj.backend"
+
+#===============================================================================
+# Package meta-data
+[project]
+name = "pmcx"
+description = "Python bindings for Monte Carlo eXtreme photon transport simulator"
+readme = "pmcx/README.md"
+version = "0.4.1"
+license = {text ="GPLv3+"}
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Environment :: GPU :: NVIDIA CUDA",
+  "Topic :: Scientific/Engineering :: Physics",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12"]
+
+#===============================================================================
+# Package dependencies
+requires-python = ">= 3.6"
+
+dependencies = [
+  "numpy >= 1.26.4"]
+
+#===============================================================================
+[[project.authors]]
+name = "Matin Raayai Ardakani"
+
+[[project.authors]]
+name = "Qianqian Fang"
+
+[[project.authors]]
+name = "Fan-Yu Yen"
+
+# [tool.pyproj.prep]
+# entry = "pkgaux:prep"
+
+#===============================================================================
+[tool.pyproj.dist]
+ignore = [
+  '**/__pycache__',
+  '**/*.py[cod]',
+  '*.egg-info',
+  '**/.git',
+  '**/.github',
+  '**/.gitignore',
+  '**/.gitmodules' ]
+
+#===============================================================================
+[tool.pyproj.dist.source]
+ignore = [
+  '**/*.so' ]
+
+copy = [
+  'src',
+  'pmcx',
+  'pyproject.toml']
+
+#===============================================================================
+# Configuration for compiling modules
+[[tool.pyproj.targets]]
+# build mcx library
+entry = 'partis.pyproj.builder:cmake'
+src_dir = 'src'
+build_dir = 'build/tmp_mcx'
+work_dir = 'build/tmp_mcx'
+prefix = 'build/pmcx'
+setup_args = []
+compile_args = ['--target', '_pmcx']
+# build_clean = false
+
+[tool.pyproj.targets.options]
+BUILD_PYTHON = true
+CMAKE_BUILD_TYPE = 'Debug'
+PYTHON_INCLUDE_DIRS = "${config_vars.INCLUDEPY}"
+PYTHON_EXECUTABLE = "${config_vars.EXENAME}"
+CUDA_NVCC_FLAGS = "-DMCX_DISABLE_CUDA_DEVICE_RESET"
+CMAKE_LIBRARY_OUTPUT_DIRECTORY = "${prefix}"
+
+#===============================================================================
+# binary distribution installed paths
+[[tool.pyproj.dist.binary.purelib.copy]]
+src = 'pmcx/pmcx'
+dst = 'pmcx'
+include = ['**/*.py']
+
+[[tool.pyproj.dist.binary.platlib.copy]]
+src = 'build/pmcx'
+dst = 'pmcx'
